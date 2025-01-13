@@ -237,7 +237,7 @@ class AsyncClient(BaseClient):
         super().__init__(options)
         self.client = httpx.AsyncClient(
             http2=options.get("http2", False),
-            proxies=self._proxies,
+            proxy=self._proxies,
             verify=options.get("verify", True),
         )
 
