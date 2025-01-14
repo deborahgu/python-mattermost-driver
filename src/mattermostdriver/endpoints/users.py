@@ -80,7 +80,9 @@ class Users(Base):
         return self.client.get(self.endpoint + "/" + user_id + "/sessions")
 
     def revoke_user_session(self, user_id, options=None):
-        return self.client.post(self.endpoint + "/" + user_id + "/sessions/revoke", options)
+        return self.client.post(
+            self.endpoint + "/" + user_id + "/sessions/revoke", options
+        )
 
     def revoke_all_user_sessions(self, user_id):
         return self.client.post(
@@ -118,7 +120,9 @@ class Users(Base):
         return self.client.put(self.endpoint + "/" + user_id + "/auth", options=options)
 
     def create_user_access_token(self, user_id, options=None):
-        return self.client.post(self.endpoint + "/" + user_id + "/tokens", options=options)
+        return self.client.post(
+            self.endpoint + "/" + user_id + "/tokens", options=options
+        )
 
     def get_stats(self):
         return self.client.get(self.endpoint + "/stats")

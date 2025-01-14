@@ -22,7 +22,12 @@ log.setLevel(logging.INFO)
 
 class BaseClient:
     def __init__(self, options):
-        self._url = self._make_url(options["scheme"], options["url"], options["port"], options["basepath"])
+        self._url = self._make_url(
+            options["scheme"],
+            options["url"],
+            options["port"],
+            options["basepath"],
+        )
         self._scheme = options["scheme"]
         self._basepath = options["basepath"]
         self._port = options["port"]
@@ -113,17 +118,33 @@ class BaseClient:
             return {}
         return {"Authorization": "Bearer {token:s}".format(token=self._token)}
 
-    def _build_request(self, method, options=None, params=None, data=None, files=None, basepath=None):
+    def _build_request(
+        self,
+        method,
+        options=None,
+        params=None,
+        data=None,
+        files=None,
+        basepath=None,
+    ):
         if params is None:
             params = {}
         if data is None:
             data = {}
         if basepath:
-            url = self._make_url(self._options["scheme"], self._options["url"], self._options["port"], basepath)
+            url = self._make_url(
+                self._options["scheme"],
+                self._options["url"],
+                self._options["port"],
+                basepath,
+            )
         else:
             url = self.url
 
-        request_params = {"headers": self.auth_header(), "timeout": self.request_timeout}
+        request_params = {
+            "headers": self.auth_header(),
+            "timeout": self.request_timeout,
+        }
 
         if params is not None:
             request_params["params"] = params
@@ -195,8 +216,24 @@ class Client(BaseClient):
             verify=options.get("verify", True),
         )
 
-    def make_request(self, method, endpoint, options=None, params=None, data=None, files=None, basepath=None):
-        request, url, request_params = self._build_request(method, options, params, data, files, basepath)
+    def make_request(
+        self,
+        method,
+        endpoint,
+        options=None,
+        params=None,
+        data=None,
+        files=None,
+        basepath=None,
+    ):
+        request, url, request_params = self._build_request(
+            method,
+            options,
+            params,
+            data,
+            files,
+            basepath,
+        )
         response = request(url + endpoint, **request_params)
 
         self._check_response(response)
@@ -223,13 +260,19 @@ class Client(BaseClient):
             return response
 
     def post(self, endpoint, options=None, params=None, data=None, files=None):
-        return self.make_request("post", endpoint, options=options, params=params, data=data, files=files).json()
+        return self.make_request(
+            "post", endpoint, options=options, params=params, data=data, files=files
+        ).json()
 
     def put(self, endpoint, options=None, params=None, data=None):
-        return self.make_request("put", endpoint, options=options, params=params, data=data).json()
+        return self.make_request(
+            "put", endpoint, options=options, params=params, data=data
+        ).json()
 
     def delete(self, endpoint, options=None, params=None, data=None):
-        return self.make_request("delete", endpoint, options=options, params=params, data=data).json()
+        return self.make_request(
+            "delete", endpoint, options=options, params=params, data=data
+        ).json()
 
 
 class AsyncClient(BaseClient):
@@ -248,15 +291,28 @@ class AsyncClient(BaseClient):
     async def __aexit__(self, *exc_info):
         return await self.client.__aexit__(*exc_info)
 
-    async def make_request(self, method, endpoint, options=None, params=None, data=None, files=None, basepath=None):
-        request, url, request_params = self._build_request(method, options, params, data, files, basepath)
+    async def make_request(
+        self,
+        method,
+        endpoint,
+        options=None,
+        params=None,
+        data=None,
+        files=None,
+        basepath=None,
+    ):
+        request, url, request_params = self._build_request(
+            method, options, params, data, files, basepath
+        )
         response = await request(url + endpoint, **request_params)
 
         self._check_response(response)
         return response
 
     async def get(self, endpoint, options=None, params=None):
-        response = await self.make_request("get", endpoint, options=options, params=params)
+        response = await self.make_request(
+            "get", endpoint, options=options, params=params
+        )
 
         if response.headers["Content-Type"] != "application/json":
             log.debug("Response is not application/json, returning raw response")
@@ -269,13 +325,19 @@ class AsyncClient(BaseClient):
             return response
 
     async def post(self, endpoint, options=None, params=None, data=None, files=None):
-        response = await self.make_request("post", endpoint, options=options, params=params, data=data, files=files)
+        response = await self.make_request(
+            "post", endpoint, options=options, params=params, data=data, files=files
+        )
         return response.json()
 
     async def put(self, endpoint, options=None, params=None, data=None):
-        response = await self.make_request("put", endpoint, options=options, params=params, data=data)
+        response = await self.make_request(
+            "put", endpoint, options=options, params=params, data=data
+        )
         return response.json()
 
     async def delete(self, endpoint, options=None, params=None, data=None):
-        response = await self.make_request("delete", endpoint, options=options, params=params, data=data)
+        response = await self.make_request(
+            "delete", endpoint, options=options, params=params, data=data
+        )
         return response.json()

@@ -39,7 +39,10 @@ class Websocket:
             context = None
 
         url = "{scheme:s}{url:s}:{port:s}{basepath:s}/websocket".format(
-            scheme=scheme, url=self.options["url"], port=str(self.options["port"]), basepath=self.options["basepath"]
+            scheme=scheme,
+            url=self.options["url"],
+            port=str(self.options["port"]),
+            basepath=self.options["basepath"],
         )
 
         self._alive = True
@@ -65,7 +68,9 @@ class Websocket:
                         if (not self.options["keepalive"]) or (not self._alive):
                             break
             except Exception as e:
-                log.exception(f"Failed to establish websocket connection: {type(e)} thrown")
+                log.exception(
+                    f"Failed to establish websocket connection: {type(e)} thrown"
+                )
                 await asyncio.sleep(self.options["keepalive_delay"])
 
     async def _start_loop(self, websocket, event_handler):
@@ -100,7 +105,9 @@ class Websocket:
         timeout = self.options["timeout"]
         while True:
             since_last_msg = time.time() - self._last_msg
-            next_timeout = timeout - since_last_msg if since_last_msg <= timeout else timeout
+            next_timeout = (
+                timeout - since_last_msg if since_last_msg <= timeout else timeout
+            )
             await asyncio.sleep(next_timeout)
             if time.time() - self._last_msg >= timeout:
                 log.debug("sending heartbeat...")
@@ -119,7 +126,13 @@ class Websocket:
         when connecting to the websocket.
         """
         log.debug("Authenticating websocket")
-        json_data = json.dumps({"seq": 1, "action": "authentication_challenge", "data": {"token": self._token}})
+        json_data = json.dumps(
+            {
+                "seq": 1,
+                "action": "authentication_challenge",
+                "data": {"token": self._token},
+            }
+        )
         await websocket.send_str(json_data)
         while True:
             message = await websocket.receive_str()
@@ -128,7 +141,9 @@ class Websocket:
             # We want to pass the events to the event_handler already
             # because the hello event could arrive before the authentication ok response
             await event_handler(message)
-            if ("event" in status and status["event"] == "hello") and ("seq" in status and status["seq"] == 0):
+            if ("event" in status and status["event"] == "hello") and (
+                "seq" in status and status["seq"] == 0
+            ):
                 log.info("Websocket authentification OK")
                 return True
             log.error("Websocket authentification failed")

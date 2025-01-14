@@ -11,6 +11,15 @@
 Python Mattermost Driver (APIv4)
 ================================
 
+Status
+------
+
+This fork exists to fix some bugs in the essentially abandoned  (but extremely
+useful) upstream project. I have not yet decided whether or not I am going to be
+able to maintain this in any reasonably secure, tested fashion. If I feel
+confident that I can, I will make it packaged and uploaded. Feel free to file
+issues or submit PR's, and I will see what I can do. No promises.
+
 Info
 ----
 

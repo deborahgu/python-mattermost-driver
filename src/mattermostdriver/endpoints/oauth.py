@@ -24,4 +24,6 @@ class OAuth(Base):
         return self.client.get(self.endpoint + "/apps/" + app_id + "/info")
 
     def get_authorized_oauth_apps(self, user_id, params=None):
-        return self.client.get(Users.endpoint + user_id + "/oauth/apps/authorized", params=params)
+        return self.client.get(
+            Users.endpoint + user_id + "/oauth/apps/authorized", params=params
+        )

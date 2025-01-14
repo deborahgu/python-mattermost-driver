@@ -35,4 +35,6 @@ class Webhooks(Base):
         return self.client.put(self.endpoint + "/outgoing/" + hook_id + "/regen_token")
 
     def call_webhook(self, hook_id, options=None):
-        return self.client.make_request("post", "/" + hook_id, options=options, basepath="/hooks")
+        return self.client.make_request(
+            "post", "/" + hook_id, options=options, basepath="/hooks"
+        )

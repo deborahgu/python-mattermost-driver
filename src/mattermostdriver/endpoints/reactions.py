@@ -16,5 +16,12 @@ class Reactions(Base):
 
     def delete_reaction(self, user_id, post_id, emoji_name, params=None):
         return self.client.delete(
-            Users.endpoint + "/" + user_id + "/posts/" + post_id + "/reactions/" + emoji_name, params=params
+            Users.endpoint
+            + "/"
+            + user_id
+            + "/posts/"
+            + post_id
+            + "/reactions/"
+            + emoji_name,
+            params=params,
         )
